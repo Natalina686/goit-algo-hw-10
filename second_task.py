@@ -1,5 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import quad
+
 
 # Визначення функції та межі інтегрування
 def f(x):
@@ -7,6 +9,29 @@ def f(x):
 
 a = 0  # Нижня межа
 b = 2  # Верхня межа
+
+# Метод Монте-Карло
+def monte_carlo_integration(func, a, b, num_samples=10000):
+    # Генерація випадкових точок
+    x_random = np.random.uniform(a, b, num_samples)
+    y_random = np.random.uniform(0, f(b), num_samples)
+    
+    # Підрахунок кількості точок, що потрапили під графік
+    under_curve = np.sum(y_random < func(x_random))
+    
+    # Обчислення площі
+    area = (b - a) * (f(b)) * (under_curve / num_samples)
+    return area
+
+# Обчислення інтеграла методом Монте-Карло
+monte_carlo_result = monte_carlo_integration(f, a, b)
+
+# Обчислення інтеграла за допомогою scipy.integrate.quad
+quad_result, _ = quad(f, a, b)
+
+# Виведення результатів
+print(f"Результат методу Монте-Карло: {monte_carlo_result}")
+print(f"Результат функції quad: {quad_result}")
 
 # Створення діапазону значень для x
 x = np.linspace(-0.5, 2.5, 400)
